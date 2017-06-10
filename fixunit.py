@@ -22,12 +22,18 @@ SELECT ?id WHERE {
     FILTER(?id != wd:Q4115189 && ?id != wd:Q13406268 && ?id != wd:Q15397819)
 }
 """
+STDUNITS = {
+    '1': 'Q199',
+    '%': 'Q11229',
+}
 
 sparql_query = SparqlQuery()
 
 if UNIT == '1' or UNIT == 'Q199':
     UNIT = None
 else:
+    if UNIT in STDUNITS:
+        UNIT = STDUNITS[UNIT]
     UNIT = 'http://www.wikidata.org/entity/' + UNIT
 
 site = pywikibot.Site("wikidata", "wikidata")
@@ -37,11 +43,10 @@ if len(sys.argv) <= 3:
     source = sys.stdin
 else:
     # use query
-    BAD_UNIT = sys.argv[3]
-    if BAD_UNIT == '1':
-      BAD_UNIT = 'Q199'
-    sparql = QUERY % (PROP, PROP, BAD_UNIT)
-    print(sparql)
+    bad_unit = sys.argv[3]
+    if bad_unit in STDUNITS:
+        bad_unit = STDUNITS[bad_unit]
+    sparql = QUERY % (PROP, PROP, bad_unit)
     items = sparql_query.get_items(sparql, item_name="id")
     print("%s items found: %s" % (len(items), items))
     source = items

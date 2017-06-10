@@ -2,13 +2,17 @@ import pywikibot
 import sys
 from pywikibot.data.sparql import SparqlQuery
 
-"""
+HELP = """
 This scripts fixes wrong units in quantities.
 Two forms:
 cat id-list | python3 fixunit.py PROP TRUE-UNIT
 or:
 python3 fixunit.py PROP TRUE-UNIT FALSE-UNIT
 """
+
+if len(sys.argv) < 3:
+	print(HELP)
+	exit()
 
 PROP = sys.argv[1]
 UNIT = sys.argv[2]
@@ -33,7 +37,11 @@ if len(sys.argv) <= 3:
     source = sys.stdin
 else:
     # use query
-    sparql = QUERY % (PROP, PROP, sys.argv[3])
+    BAD_UNIT = sys.argv[3]
+    if BAD_UNIT == '1':
+      BAD_UNIT = 'Q199'
+    sparql = QUERY % (PROP, PROP, BAD_UNIT)
+    print(sparql)
     items = sparql_query.get_items(sparql, item_name="id")
     print("%s items found: %s" % (len(items), items))
     source = items

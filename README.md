@@ -1,0 +1,2 @@
+# wikiscripts
+Various pywikibot scripts

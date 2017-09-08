@@ -2,6 +2,11 @@ import pywikibot
 from pywikibot.data.sparql import SparqlQuery
 from urllib.parse import quote
 
+"""
+Get the list of units with anomalies, such as props having
+both united and unitless quantities.
+"""
+
 QUANT = """
 SELECT ?p WHERE {
   ?p a wikibase:Property; wikibase:propertyType wikibase:Quantity .

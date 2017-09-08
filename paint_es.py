@@ -8,19 +8,19 @@ import re
 
 QUERY = """
 SELECT ?id WHERE {
-    ?site schema:name "%s"@ru; schema:about ?id .
+    ?site schema:name "%s"@es;  schema:about ?id .
 }
 """
 QUERY_LINK = """
 SELECT ?name WHERE {
-  ?page schema:about wd:%s; schema:inLanguage "ru"; schema:name ?name .
+    ?page schema:about wd:%s;  schema:inLanguage "es"; schema:name ?name .
 }
 """
 QID = sys.argv[1]
 sparql_query = SparqlQuery()
 linkre = re.compile('\[\[([^|]+)?(\|.+)?]]')
 titlere = re.compile('\{\{lang-(\w+)\|(.+)}}')
-yearre = re.compile('\[\[(\d+) ')
+yearre = re.compile('\[\[(\d+)')
 
 def find_by_label(label):
     match = linkre.match(label)
@@ -58,25 +58,25 @@ def get_year(year):
     
 
 property_map = {
-    'год':  ('P571', lambda x: "+" + get_year(x) + "-01-01T00:00:00Z/9"),
-    'ширина': ('P2049', lambda x: x.replace(",", ".") + "U174728"),
-    'высота': ('P2048', lambda x: x.replace(",", ".") + "U174728"),
-    'название': ('P1476', lambda x: 'ru:"' + x.lstrip('«').rstrip('»')  + '"'),
-    'автор': ('P170', find_by_label),
-    'художник': ('P170', find_by_label),
-    'файл': ('P18', lambda x: '"' + x + '"'),
-    'музей': ('P195', find_by_label),
-    'оригинал': ('P1476', extract_title)
+    'año':  ('P571', lambda x: "+" + get_year(x) + "-01-01T00:00:00Z/9"),
+    'anchura': ('P2049', lambda x: x.replace(" cm", "") + "U174728"),
+    'longitud': ('P2048', lambda x: x.replace(" cm", "") + "U174728"),
+    'título': ('P1476', lambda x: 'es:"' + x.lstrip("''").rstrip("''")  + '"'),
+    'autor': ('P170', find_by_label),
+    'imagen': ('P18', lambda x: '"' + x + '"'),
+    'localización': ('P195', find_by_label),
 }
 
-site = pywikibot.Site("ru", "wikipedia")
+site = pywikibot.Site("es", "wikipedia")
 for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], site):
     print(QID + "\tP31\tQ3305213")
     print(QID + "\tDen\t\"painting\"")
     print(QID + "\tDru\t\"картина\"")
+    print(QID + "\tDuk\t\"картина\"")
+#    print(QID + "\tDes\t\"pintura\"")
     itemData = {}
     for (template, args) in page.templatesWithParams():
-        if template.title() == 'Шаблон:Произведение искусства':
+        if template.title() == 'Plantilla:Ficha de pintura' or template.title() == 'Plantilla:Ficha de obra de arte':
             argmap = dict(arg.split('=', maxsplit=1) for arg in args)
             for name in property_map:
                 if name in argmap:
@@ -88,4 +88,4 @@ for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], sit
                     if val != None:
                         itemData[property_map[name][0]] = val
     for prop in itemData:
-        print("{0}\t{1}\t{2}\tS143\tQ206855".format(QID, prop, itemData[prop]))
+        print("{0}\t{1}\t{2}\tS143\tQ8449".format(QID, prop, itemData[prop]))

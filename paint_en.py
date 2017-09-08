@@ -8,12 +8,12 @@ import re
 
 QUERY = """
 SELECT ?id WHERE {
-    ?site schema:name "%s"@ru; schema:about ?id .
+    ?site schema:name "%s"@en;  schema:about ?id .
 }
 """
 QUERY_LINK = """
 SELECT ?name WHERE {
-  ?page schema:about wd:%s; schema:inLanguage "ru"; schema:name ?name .
+    ?page schema:about wd:%s;  schema:inLanguage "en"; schema:name ?name .
 }
 """
 QID = sys.argv[1]
@@ -58,25 +58,22 @@ def get_year(year):
     
 
 property_map = {
-    'год':  ('P571', lambda x: "+" + get_year(x) + "-01-01T00:00:00Z/9"),
-    'ширина': ('P2049', lambda x: x.replace(",", ".") + "U174728"),
-    'высота': ('P2048', lambda x: x.replace(",", ".") + "U174728"),
-    'название': ('P1476', lambda x: 'ru:"' + x.lstrip('«').rstrip('»')  + '"'),
-    'автор': ('P170', find_by_label),
-    'художник': ('P170', find_by_label),
-    'файл': ('P18', lambda x: '"' + x + '"'),
-    'музей': ('P195', find_by_label),
-    'оригинал': ('P1476', extract_title)
+    'year':  ('P571', lambda x: "+" + get_year(x) + "-01-01T00:00:00Z/9"),
+    'width_metric': ('P2049', lambda x: x.replace(",", ".") + "U174728"),
+    'height_metric': ('P2048', lambda x: x.replace(",", ".") + "U174728"),
+    'title': ('P1476', lambda x: 'en:"' + x.lstrip('«').rstrip('»')  + '"'),
+    'artist': ('P170', find_by_label),
+    'image_file': ('P18', lambda x: '"' + x + '"'),
+    'museum': ('P195', find_by_label),
 }
 
-site = pywikibot.Site("ru", "wikipedia")
+site = pywikibot.Site("en", "wikipedia")
 for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], site):
     print(QID + "\tP31\tQ3305213")
     print(QID + "\tDen\t\"painting\"")
-    print(QID + "\tDru\t\"картина\"")
     itemData = {}
     for (template, args) in page.templatesWithParams():
-        if template.title() == 'Шаблон:Произведение искусства':
+        if template.title() == 'Template:Infobox Artwork':
             argmap = dict(arg.split('=', maxsplit=1) for arg in args)
             for name in property_map:
                 if name in argmap:
@@ -88,4 +85,4 @@ for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], sit
                     if val != None:
                         itemData[property_map[name][0]] = val
     for prop in itemData:
-        print("{0}\t{1}\t{2}\tS143\tQ206855".format(QID, prop, itemData[prop]))
+        print("{0}\t{1}\t{2}\tS143\tQ328".format(QID, prop, itemData[prop]))

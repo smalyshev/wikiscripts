@@ -35,6 +35,7 @@ STDUNITS = {
     'km': 'Q828224',
     'kg': 'Q11570',
     'kmh': 'Q180154',
+    'km2': 'Q712226',
 }
 
 sparql_query = SparqlQuery()

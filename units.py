@@ -59,7 +59,9 @@ allowed_anomaly = {
     'P1971': set(['http://www.wikidata.org/entity/Q177232', 'http://www.wikidata.org/entity/Q308194']),
     'P2103': set(['http://www.wikidata.org/entity/Q28997']),
     'P2124': set(['http://www.wikidata.org/entity/Q37226', 'http://www.wikidata.org/entity/Q43229', 'http://www.wikidata.org/entity/Q515']),
+    'P2046': set(['http://www.wikidata.org/entity/Q26002024', 'http://www.wikidata.org/entity/Q26002011'])
     'P2196': set(['http://www.wikidata.org/entity/Q21094885']),
+    'P3872': set(['http://www.wikidata.org/entity/Q42889'])
 }
 
 # report inconsistent properties

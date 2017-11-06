@@ -29,13 +29,17 @@ SELECT ?id WHERE {
 """
 STDUNITS = {
     '1': 'Q199',
-	'bad1': '1',
+     'bad1': '1',
+    'badm': 'm2',
+    'm': 'Q11573',
+    'm2': 'Q25343',
     '%': 'Q11229',
     'cm': 'Q174728',
     'km': 'Q828224',
     'kg': 'Q11570',
     'kmh': 'Q180154',
     'km2': 'Q712226',
+    'y': 'Q577',
 }
 
 sparql_query = SparqlQuery()
@@ -45,6 +49,8 @@ if UNIT == '1' or UNIT == 'Q199':
 else:
     if UNIT in STDUNITS:
         UNIT = STDUNITS[UNIT]
+    if UNIT[0] != 'Q':
+        raise RuntimeError("Bad unit: "+ UNIT)
     UNIT = 'http://www.wikidata.org/entity/' + UNIT
 
 if TYPE:

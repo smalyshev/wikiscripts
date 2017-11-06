@@ -51,6 +51,8 @@ parser.add_option("-w", "--wait", dest="wait",
                   help="Bot wait period", type="int", metavar="NUM")
 parser.add_option("-b", "--bad", dest="bad",
                   help="How many bad items to allow?", default=30, type="int", metavar="NUM")
+parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
+                  help="Print SPARQL queries being run")
 
 (options, args) = parser.parse_args()
 
@@ -85,7 +87,7 @@ SELECT DISTINCT ?s WHERE {
   OPTIONAL { ?s wdt:P582 ?et }
   FILTER(!bound(?et))
 # st2 is normal rank
-  ?st2 wikibase:rank wikibase:NormalRank.
+#  ?st2 wikibase:rank wikibase:NormalRank.
   %s
 } LIMIT %d
 """
@@ -103,7 +105,7 @@ SELECT DISTINCT ?s WHERE {
 # Another claim
   ?s ?prop ?st2 .
   FILTER(?st2 != ?st)
-# with an end time
+# with a point-in-time time
   ?st2 q:P585 ?t3 .
 # and it's not a dead person
   OPTIONAL { ?s wdt:P570 ?d }
@@ -112,8 +114,8 @@ SELECT DISTINCT ?s WHERE {
   OPTIONAL { ?s wdt:P576 ?ab }
   FILTER(!bound(?ab))
 # st2 is normal rank and normal is best
-  ?st2 wikibase:rank wikibase:NormalRank.
-  ?st2 a wikibase:BestRank .
+#  ?st2 wikibase:rank wikibase:NormalRank.
+#  ?st2 a wikibase:BestRank .
   %s
 } LIMIT %d
 """
@@ -130,7 +132,8 @@ def get_items(query, prop, bad_ids=[]):
         id_filter = ''
 
     dquery = query % (prop, id_filter, options.limit)
-#    print(dquery)
+    if options.verbose:
+        print(dquery)
 
     return sparql_query.get_items(dquery, item_name="s")
 
@@ -165,10 +168,11 @@ Too many bad entries:
 P54: member of the sports team
 P102: member of political party
 P131: located in the administrative territorial entity
-?P286: head coach?
+P286: head coach
 P195: collection
 P551: residence
 P579: IMA status and/or rank
+P1448: official name
 """
 """
 P6: head of government
@@ -208,13 +212,13 @@ P1037: manager/director
 P1075: rector
 P1308: officeholder
 P1435: heritage status
-P1448: official name
 P1454: legal form
 P1476: title
 P1705: native label
 P1813: short name
 P1998: UCI code
 P2978: wheel arrangement
+P3615: Vision of Britain unit ID
 """
 """
 point in time:
@@ -237,10 +241,9 @@ P4080: number of houses
 
 if not TEST:
     start_end_props = [
-               'P131',
-               'P41', 'P26', 'P6', 'P17', 'P35', 'P36', 'P94', 'P115', 'P118', 'P123', 'P126', 'P138', 'P154', 'P159', 'P169',
+               'P26', 'P6', 'P17', 'P35', 'P36', 'P41', 'P94', 'P115', 'P118', 'P123', 'P126', 'P138', 'P154', 'P159', 'P169',
                'P176', 'P237', 'P289', 'P300', 'P449', 'P484', 'P488', 'P505', 'P598', 'P605', 'P625', 'P708', 'P749', 'P879',
-               'P964', 'P969', 'P1037', 'P1075', 'P1308', 'P1435', 'P1448', 'P1454', 'P1476', 'P1705', 'P1813', 'P1998', 'P2978'
+               'P964', 'P969', 'P1037', 'P1075', 'P1308', 'P1435', 'P1454', 'P1476', 'P1705', 'P1813', 'P1998', 'P2978', 'P3615',
     ]
     point_props = [
                'P348', 'P1082', 'P1114', 'P1538', 'P1539', 'P1540', 'P1831', 'P2046', 'P1833',  'P2124', 'P2196', 'P2403',

@@ -59,17 +59,17 @@ SELECT DISTINCT ?s WHERE {
 with open(sys.argv[1]) as f:
     items = f.readlines()
 
-print "Got %d items" % len(items)
+print("Got %d items" % len(items))
 
 for item in items:
     item = item.strip()
     se_query = START_END_QUERY % item
     pit_query = POINT_QUERY % item
-    print "Checking %s..." % item
+    print("Checking %s..." % item)
     results = sparql_query.get_items(se_query, item_name="s")
     if len(results) > 0:
-        print " %d start/end results for %s" % (len(results), item)
+        print(" %d start/end results for %s" % (len(results), item))
     results = sparql_query.get_items(pit_query, item_name="s")
     if len(results) > 0:
-        print " %d PIT results for %s" % (len(results), item)
+        print(" %d PIT results for %s" % (len(results), item))
         

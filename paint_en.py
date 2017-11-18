@@ -73,7 +73,8 @@ for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], sit
     print(QID + "\tDen\t\"painting\"")
     itemData = {}
     for (template, args) in page.templatesWithParams():
-        if template.title() == 'Template:Infobox Artwork':
+#        print(template.title())
+        if template.title() == 'Template:Infobox Artwork' or template.title() == 'Template:Infobox Painting':
             argmap = dict(arg.split('=', maxsplit=1) for arg in args)
             for name in property_map:
                 if name in argmap:

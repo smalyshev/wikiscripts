@@ -14,7 +14,9 @@ SELECT ?p WHERE {
 """
 CHECKUNITS = """
 SELECT ?unit (count(?x) as ?count) WHERE {
-    ?x p:%s/psv:%s [ wikibase:quantityUnit ?unit ]
+     { ?x p:%s/psv:%s [ wikibase:quantityUnit ?unit ] }
+     UNION
+     { ?x pqv:%s [ wikibase:quantityUnit ?unit ] }
 } GROUP BY ?unit
 ORDER BY DESC(?count)
 """
@@ -26,8 +28,19 @@ SELECT ?id ?idLabel ?type ?typeLabel WHERE {
     SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
 }
 """
+GETQUNITS = """
+SELECT ?id ?idLabel ?type ?typeLabel WHERE {
+    ?id ?p ?s .
+    # Ignore examples
+    FILTER(?p != p:P1855)
+    ?s pqv:%s [ wikibase:quantityUnit wd:%s ] .
+    OPTIONAL { ?id wdt:P31 ?type }
+    FILTER(?id != wd:Q4115189 && ?id != wd:Q13406268 && ?id != wd:Q15397819)
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . }
+}
+"""
 SPARQL = """
-[http://query.wikidata.org/#%s SPARQL]
+[http://query.wikidata.org/#%s SPARQL] [http://query.wikidata.org/#%s Q]
 """
 LOGPAGE = "User:Laboramus/Units"
 ONE = 'http://www.wikidata.org/entity/Q199'
@@ -86,14 +99,15 @@ def found_inconsistent(prop, result):
         if unitName in sandboxes:
             continue
         query = GETUNITS % (prop, prop, unitName)
+        query2 = GETQUNITS % (prop, unitName)
         text = text + "|-\n" + \
             "|| {{Q|" + unitName + "}} || " + \
             unit['count'] + "||" + \
-            SPARQL % quote(query) + "\n"
+            SPARQL % (quote(query), quote(query2)) + "\n"
         if unitName == 'Q199':
             counts[prop] = unit['count']
     text = text + "|}\n"
-    text = text + "[http://query.wikidata.org/#%s Try again]\n" % quote(CHECKUNITS % (prop, prop))
+    text = text + "[http://query.wikidata.org/#%s Try again]\n" % quote(CHECKUNITS % (prop, prop, prop))
     logpage.text = text
     logpage.save("log for "+prop)
 

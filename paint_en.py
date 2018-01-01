@@ -40,7 +40,7 @@ def find_by_label(label):
 
 def find_by_sitelink(qid):
     sparql = QUERY_LINK % (qid)
-#    print(sparql)
+    print(sparql)
     results = sparql_query.select(sparql)
     return results[0]['name']
 
@@ -74,7 +74,7 @@ for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], sit
     itemData = {}
     for (template, args) in page.templatesWithParams():
 #        print(template.title())
-        if template.title() == 'Template:Infobox Artwork' or template.title() == 'Template:Infobox Painting':
+        if template.title() == 'Template:Infobox Artwork' or template.title() == 'Template:Infobox Painting' or template.title() == 'Template:Infobox artwork':
             argmap = dict(arg.split('=', maxsplit=1) for arg in args)
             for name in property_map:
                 if name in argmap:

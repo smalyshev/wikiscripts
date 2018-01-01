@@ -29,7 +29,7 @@ SELECT ?id ?idLabel ?type ?typeLabel WHERE {
 }
 """
 GETQUNITS = """
-SELECT ?id ?idLabel ?type ?typeLabel WHERE {
+SELECT ?id ?idLabel ?p ?type ?typeLabel WHERE {
     ?id ?p ?s .
     # Ignore examples
     FILTER(?p != p:P1855)
@@ -113,7 +113,7 @@ def found_inconsistent(prop, result):
 
 # Check property units
 for item in items:
-    query = CHECKUNITS % (item, item)
+    query = CHECKUNITS % (item, item, item)
     try:
         result = sparql_query.select(query)
     except:

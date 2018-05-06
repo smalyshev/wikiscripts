@@ -14,7 +14,7 @@ SELECT ?id WHERE {
 QUERY_LINK = """
 SELECT ?name WHERE {
     ?page schema:about wd:%s;  schema:inLanguage "en"; schema:name ?name .
-}
+} #
 """
 QID = sys.argv[1]
 sparql_query = SparqlQuery()
@@ -40,8 +40,9 @@ def find_by_label(label):
 
 def find_by_sitelink(qid):
     sparql = QUERY_LINK % (qid)
-    print(sparql)
+#    print(sparql)
     results = sparql_query.select(sparql)
+#    print(results)
     return results[0]['name']
 
 def extract_title(title):
@@ -64,6 +65,7 @@ property_map = {
     'title': ('P1476', lambda x: 'en:"' + x.lstrip('«').rstrip('»')  + '"'),
     'artist': ('P170', find_by_label),
     'image_file': ('P18', lambda x: '"' + x + '"'),
+    'image': ('P18', lambda x: '"' + x + '"'),
     'museum': ('P195', find_by_label),
 }
 

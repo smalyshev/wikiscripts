@@ -19,6 +19,7 @@ parser.add_argument("-t", "--to", dest="toUnit", help="Correct unit", required=T
 parser.add_argument("-T", "--type", dest="type", help="Type of items to process", metavar="Q123")
 parser.add_argument("-D", "--drop", dest="drop", action="store_true", help="Drop statement instead of changing units")
 parser.add_argument("-q", dest="qualifiers", action="store_true", help="Look in qualifiers")
+parser.add_argument("-a", dest="all", action="store_true", help="Look in both statements and qualifiers")
 
 options = parser.parse_args()
 
@@ -54,6 +55,7 @@ STDUNITS = {
     'y': 'Q577',
     'amu': 'Q483261',
     'usd': 'Q4917',
+    "min": 'Q7727'
 }
 
 def convert_unit(unit):
@@ -116,7 +118,7 @@ def process_claim(qid, claim):
         target._unit = UNIT
         claim.changeTarget(target, summary=comment)
 
-def process_claim_qualifier(qid, claim, qclaim):
+def process_claim_qualifier(qid, claim, qclaim, bad_unit):
     if qclaim.getSnakType() != 'value':
         return
     target = qclaim.getTarget()
@@ -132,6 +134,9 @@ def process_claim_qualifier(qid, claim, qclaim):
     if UNIT is None and target.unit == '1':
         return
     if target.unit != UNIT:
+        if target.unit != bad_unit:
+            print("Bad unit for %s:%s:%s - want %s, now %s, not %s. Ignoring." % (qid, claim.id, PROP, UNIT, target.unit, bad_unit))
+            return
         comment = "Bad unit for %s:%s:%s - want %s, now %s. Fixing." % (qid, claim.id, PROP, UNIT, target.unit)
         print(comment)
         target._unit = UNIT
@@ -149,17 +154,20 @@ for qid in source:
         qid = qid[31:]
     item = pywikibot.ItemPage(repo, qid)
     item.get()
-    if not options.qualifiers:
+    if not options.qualifiers or options.all:
         if PROP not in item.claims:
             print("No %s for %s, skip!" % (PROP, qid))
             continue
         for claim in item.claims[PROP]:
             process_claim(qid, claim)
-    else:
+    if options.qualifiers or options.all:
         # Qualifier check
+        bad_unit = options.fromUnit
+        if bad_unit != '1':
+            bad_unit = 'http://www.wikidata.org/entity/' + convert_unit(bad_unit)
         for p in item.claims:
             for claim in item.claims[p]:
                 if PROP not in claim.qualifiers:
                     continue
                 for qclaim in claim.qualifiers[PROP]:
-                    process_claim_qualifier(qid, claim, qclaim)
+                    process_claim_qualifier(qid, claim, qclaim, bad_unit)

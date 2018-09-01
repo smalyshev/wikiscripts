@@ -53,7 +53,7 @@ badprops = []
 counts = {}
 items = sparql_query.get_items(QUANT, item_name='p')
 
-sandboxes = set(['Q13406268', 'Q15397819', 'Q4115189'])
+sandboxes = {'Q13406268', 'Q15397819', 'Q4115189'}
 # Mixed units - for these, mixing is OK
 # maximum capacity (P1083)
 # total produced (P1092)
@@ -63,18 +63,29 @@ sandboxes = set(['Q13406268', 'Q15397819', 'Q4115189'])
 # personal best (P2415)
 # number of parts of a work of art (P2635)
 # number of participants (P1132)
-mixed_units = set(['P1083', 'P1092', 'P1181', 'P1114', 'P1132', 'P1436', 'P2415', 'P2635' ])
+mixed_units = {'P1083', 'P1092', 'P1181', 'P1114', 'P1132', 'P1436', 'P2415', 'P2635'}
 # Properties with known anomalous units
 allowed_anomaly = {
-    'P1110': set(['http://www.wikidata.org/entity/Q6256', 'http://www.wikidata.org/entity/Q7275']),
-    'P1113': set(['http://www.wikidata.org/entity/Q1261214']),
-    'P1122': set(['http://www.wikidata.org/entity/Q12503', 'http://www.wikidata.org/entity/Q743139']),
-    'P1971': set(['http://www.wikidata.org/entity/Q177232', 'http://www.wikidata.org/entity/Q308194']),
-    'P2103': set(['http://www.wikidata.org/entity/Q28997']),
-    'P2124': set(['http://www.wikidata.org/entity/Q37226', 'http://www.wikidata.org/entity/Q43229', 'http://www.wikidata.org/entity/Q515']),
-    'P2046': set(['http://www.wikidata.org/entity/Q26002024', 'http://www.wikidata.org/entity/Q26002011']),
-    'P2196': set(['http://www.wikidata.org/entity/Q21094885']),
-    'P3872': set(['http://www.wikidata.org/entity/Q42889'])
+    # number of speakers:percentage
+    'P1098': {'http://www.wikidata.org/entity/Q11229'},
+    # proportion:percentage
+    'P1107': {'http://www.wikidata.org/entity/Q11229'},
+    # attendance:country, state
+    'P1110': {'http://www.wikidata.org/entity/Q6256', 'http://www.wikidata.org/entity/Q7275'},
+    #vote received:percentage
+    'P1111': {'http://www.wikidata.org/entity/Q11229'},
+    # number of episodes
+    'P1113': {'http://www.wikidata.org/entity/Q1261214'},
+    # spin quantum number
+    'P1122': {'http://www.wikidata.org/entity/Q12503', 'http://www.wikidata.org/entity/Q743139'},
+    # number of children: son, daughter
+    'P1971': {'http://www.wikidata.org/entity/Q177232', 'http://www.wikidata.org/entity/Q308194'},
+    'P2103': {'http://www.wikidata.org/entity/Q28997'},
+    'P2124': {'http://www.wikidata.org/entity/Q37226', 'http://www.wikidata.org/entity/Q43229',
+              'http://www.wikidata.org/entity/Q515'},
+    'P2046': {'http://www.wikidata.org/entity/Q26002024', 'http://www.wikidata.org/entity/Q26002011'},
+    'P2196': {'http://www.wikidata.org/entity/Q21094885'},
+    'P3872': {'http://www.wikidata.org/entity/Q42889'}
 }
 
 # report inconsistent properties

@@ -72,8 +72,8 @@ property_map = {
 site = pywikibot.Site("ru", "wikipedia")
 for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], site):
     print(QID + "\tP31\tQ3305213")
-    print(QID + "\tDen\t\"painting\"")
-    print(QID + "\tDru\t\"картина\"")
+#    print(QID + "\tDen\t\"painting\"")
+#    print(QID + "\tDru\t\"картина\"")
     itemData = {}
     for (template, args) in page.templatesWithParams():
         if template.title() == 'Шаблон:Произведение искусства':

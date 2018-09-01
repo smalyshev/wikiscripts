@@ -14,7 +14,7 @@ SELECT ?id WHERE {
 QUERY_LINK = """
 SELECT ?name WHERE {
     ?page schema:about wd:%s;  schema:inLanguage "en"; schema:name ?name .
-} #
+}
 """
 QID = sys.argv[1]
 sparql_query = SparqlQuery()
@@ -56,7 +56,7 @@ def get_year(year):
     if match:
         return match.group(1)
     return year
-    
+
 
 property_map = {
     'year':  ('P571', lambda x: "+" + get_year(x) + "-01-01T00:00:00Z/9"),
@@ -72,12 +72,16 @@ property_map = {
 site = pywikibot.Site("en", "wikipedia")
 for page in pagegenerators.PagesFromTitlesGenerator([find_by_sitelink(QID)], site):
     print(QID + "\tP31\tQ3305213")
-    print(QID + "\tDen\t\"painting\"")
+#    print(QID + "\tDen\t\"painting\"")
     itemData = {}
     for (template, args) in page.templatesWithParams():
 #        print(template.title())
-        if template.title() == 'Template:Infobox Artwork' or template.title() == 'Template:Infobox Painting' or template.title() == 'Template:Infobox artwork':
-            argmap = dict(arg.split('=', maxsplit=1) for arg in args)
+        if template.title() == 'Template:Infobox Artwork' \
+            or template.title() == 'Template:Infobox Painting' \
+            or template.title() == 'Template:Infobox artwork' \
+            or template.title() == 'Template:Infobox painting':
+#            print(args)
+            argmap = dict(arg.split('=', maxsplit=1) for arg in args if '=' in arg)
             for name in property_map:
                 if name in argmap:
                     value = argmap[name]
